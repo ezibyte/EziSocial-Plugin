@@ -35,3 +35,95 @@ Email - Allows you to preconfigure the mail and allows user to send the mail to 
 How to use this plugin
 ----------------------
 To know about how to use this plugin, please visit site: http://www.ezibyte.com
+
+
+=========================================
+Version 1.0.1 - Pushed on 30th April 2013
+=========================================
+
+Added two new methods:
+
+1. bool isUserAlreadyLoginedToFacebook_Or_IsSessionActive = EziSocialObject::sharedObject()->isFacebookSessionActive();
+
+While app is running, anytime if you like to know if user is actually logined to Facebook or not. Or whether session is expired or not. Just simply called above method.
+There is no callback method of this and result will immediately return.
+
+2. EziSocialObject::sharedObject()->fetchFBUserDetails(true);
+
+Definition of fetchUserDetails has been changed. Now you can actually fetch user email ID also. To get the user email ID, pass the value as true otherwise false.
+
+NOTE: If ask for user email ID, then first time it will ask extra permission from the app user to allow your app to see user email ID.
+
+HOW TO CHECK IF USER ALLOWED TO SEE HIS EMAIL ID OR NOT
+-------------------------------------------------------
+
+In case user decide not to send you the email ID then in callback method, within Data Dictionary an Error message will return.
+
+Use can check the error message as follows:-
+
+-------- CODE START -----------
+
+if (data)
+    {
+        if (data->objectForKey(KEY_FB_USER_ERROR))
+        {
+            CCMessageBox(((CCString*)(data->objectForKey(KEY_FB_USER_ERROR)))->getCString(), "Error");
+            return;
+        }
+        
+        mUsername->setString(((CCString*)(data->objectForKey(KEY_FB_USER_NAME)))->getCString());
+        mGender->setString(((CCString*)(data->objectForKey(KEY_FB_USER_GENDER)))->getCString());
+        mHometown->setString(((CCString*)(data->objectForKey(KEY_FB_USER_HOMETOWN)))->getCString());
+        mPresentLocation->setString(((CCString*)(data->objectForKey(KEY_FB_USER_PRESENT_LOCATION)))->getCString());
+        mProfileID->setString(((CCString*)(data->objectForKey(KEY_FB_USER_PROFILE_ID)))->getCString());
+        mFirstName->setString(((CCString*)(data->objectForKey(KEY_FB_USER_FIRST_NAME)))->getCString());
+        mLastName->setString(((CCString*)(data->objectForKey(KEY_FB_USER_LAST_NAME)))->getCString());
+        mAccessToken->setString(((CCString*)(data->objectForKey(KEY_FB_USER_ACCESS_TOKEN)))->getCString());
+        
+        CCLOG("Access Token = %s", ((CCString*)(data->objectForKey(KEY_FB_USER_ACCESS_TOKEN)))->getCString());
+        
+        CCString* name = CCString::createWithFormat("%s %s", mFirstName->getString(), mLastName->getString(), NULL);
+        mName->setString(name->getCString());
+        
+        /* Here is the email ID of the user */
+        if (data->objectForKey(KEY_FB_USER_EMAIL))
+        {
+            CCLOG("User email ID = %s", ((CCString*)(data->objectForKey(KEY_FB_USER_EMAIL)))->getCString());
+        }
+        
+        this->showUserDetailPage();
+    }
+    else
+    {
+        CCMessageBox("Sorry, user details not available", "fbUserDetailCallback");
+    }
+
+-------- CODE END -----------
+
+Android Changes
+---------------
+
+To make this code working on Android side, you need to change onActivityResult(...) within Cocos2dxActivity as follows:-
+
+-------- CODE START -----------
+
+@Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		EziSocialManager.onActivityResult(requestCode, resultCode, data);
+		
+	}
+
+-------- CODE END -----------
+
+
+Debugging On Android
+--------------------
+
+In version 1.0.1, you can enable Android debugging by calling following method in Any Java Class:
+
+EziSocialManager.setEnableDebugLogs(false); // To disable logs. By Default, disable
+
+EziSocialManager.setEnableDebugLogs(true); // To enable logs. By Default, disable
+
