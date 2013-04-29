@@ -1,10 +1,12 @@
 //
 //  EziSocialObject.h
-//  EziSocial
+//  EziSocialDemo
 //
 //  Created by Paras Mendiratta on 11/04/13.
-//  Copyright @EziByte 2013
 //
+//  EziByte (http://www.ezibyte.com)
+//
+
 /***
  
  This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,7 +19,8 @@
  
  3. This notice may not be removed or altered from any source distribution.
  
- */
+*/
+
 
 #ifndef __FacebookGameDemo__EziSocialObject__
 #define __FacebookGameDemo__EziSocialObject__
@@ -47,9 +50,9 @@ public:
     EziEmailDelegate* getEmailDelegate();
     
     void performLoginUsingFacebook();
-    void perfromLogoutFromFacebook();
+    void performLogoutFromFacebook();
     
-    void fetchFBUserDetails();
+    void fetchFBUserDetails(bool askForEmailID);
     
     // Post Message On Wall
     void postMessageOnWall(const char* heading,
@@ -78,6 +81,8 @@ public:
     
     // Network Status
     bool checkNetworkStatusForHost(const char* hostURL);
+    
+     bool isFacebookSessionActive();
     
 };
 

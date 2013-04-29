@@ -1,10 +1,11 @@
 //
 //  EziSocialDefinition.h
-//  EziSocial
+//  EziScoailDemo
 //
 //  Created by Paras Mendiratta on 11/04/13.
-//  Copyright @EziByte 2013
+//  EziByte (http://www.ezibyte.com)
 //
+
 /***
  
  This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,7 +18,9 @@
  
  3. This notice may not be removed or altered from any source distribution.
  
- */
+*/
+
+
 
 #ifndef FacebookGameDemo_EziSocialDefinition_h
 #define FacebookGameDemo_EziSocialDefinition_h
@@ -29,9 +32,10 @@
 
 #define FACEBOOK_PAGE_ID    "377572839023945"
 
-#define ENABLE_MAIL_FUNCTIONALITY
-#define ENABLE_TWITTER_FUNCTIONALITY
+//#define ENABLE_MAIL_FUNCTIONALITY
+//#define ENABLE_TWITTER_FUNCTIONALITY
 
+#define KEY_FB_USER_ERROR               "error"
 #define KEY_FB_USER_NAME                "username"
 #define KEY_FB_USER_EMAIL               "email"
 #define KEY_FB_USER_GENDER              "gender"
@@ -91,51 +95,54 @@ namespace EziSocialWrapperNS
         };
     };
     
+
+        // Messages
+        void postMessage(FBMessageCallback callback,
+                         const char* heading,
+                         const char* caption,
+                         const char* description,
+                         const char* badgeIconURL,
+                         const char* deepLinkURL);
     
-    // Messages
-    void postMessage(FBMessageCallback callback,
-                     const char* heading,
-                     const char* caption,
-                     const char* description,
-                     const char* badgeIconURL,
-                     const char* deepLinkURL);
-    
-    void autoPostMessageOnWall(FBMessageCallback callback,
-                               const char* heading,
-                               const char* caption,
-                               const char* description,
-                               const char* badgeIconURL,
-                               const char* deepLinkURL);
-    
-    
-    void postScore(EziSocialWrapperNS::FBMessageCallback callback,
-                   unsigned long long score);
-    
-    // User details
-    void fetchUserDetails(FBUserDetailCallback callback);
-    
-    // User login / logout
-    void loginWithFacebook(FBSessionCallback callback);
-    void logoutFromFacebook(FBSessionCallback callback);
-    
-    // Check if user has liked my page
-    void hasUserLikePage(FBPageLikeCallback callback, const char*pageID);
-    
-    // Get the list of friends who are using this app.
-    void getListOfFriendsUsingThisApp(FBFriendsCallback callback);
+        void autoPostMessageOnWall(FBMessageCallback callback,
+                                   const char* heading,
+                                   const char* caption,
+                                   const char* description,
+                                   const char* badgeIconURL,
+                                   const char* deepLinkURL);
     
     
-    void getHighScores(FBHighScoresCallback callback);
+        void postScore(EziSocialWrapperNS::FBMessageCallback callback,
+                       unsigned long long score);
     
-    void openFacebookPage(const char* pageID, bool checkPageLike, FBPageLikeCallback callback);
+        // User details
+        void fetchUserDetails(FBUserDetailCallback callback, bool getEmailIDAlso);
     
-    // Twitter Methods...
-    void tweet(const char* message, const char* imageURL);
+        // User login / logout 
+        void loginWithFacebook(FBSessionCallback callback);
+        void logoutFromFacebook(FBSessionCallback callback);
+        
+        // Check if user has liked my page
+        void hasUserLikePage(FBPageLikeCallback callback, const char*pageID);
+        
+        // Get the list of friends who are using this app.
+        void getListOfFriendsUsingThisApp(FBFriendsCallback callback);
+
     
-    // Email Methods
-    void sendEmail(const char* subject, const char* messageBody, const char* recipents, MailCallback callback);
+        void getHighScores(FBHighScoresCallback callback);
     
-    bool networkAvailableForHost(const char* hostURL);
+        void openFacebookPage(const char* pageID, bool checkPageLike, FBPageLikeCallback callback);
+    
+        // Twitter Methods...
+        void tweet(const char* message, const char* imageURL);
+    
+        // Email Methods
+        void sendEmail(const char* subject, const char* messageBody, const char* recipents, MailCallback callback);
+    
+        bool networkAvailableForHost(const char* hostURL);
+    
+        // Check if session is active in Facebook. If not then use need to make user relogin.
+        bool isFacebookSessionActive();
 }
 
 #endif

@@ -1,23 +1,10 @@
 //
 //  JNI_EziSocialManager.cpp
-//  EziSocial
+//  FacebookGameDemo
 //
 //  Created by Paras Mendiratta on 11/04/13.
-//  Copyright @EziByte 2013
 //
-/***
- 
- This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
- 
- Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
- 
- 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
- 
- 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
- 
- 3. This notice may not be removed or altered from any source distribution.
- 
- */
+//
 
 #include "EziSocialDefinition.h"
 #include "cocos2d.h"
@@ -187,6 +174,27 @@ void EziSocialWrapperNS::sendEmail(const char* subject,
 }
 
 
+bool EziSocialWrapperNS::isFacebookSessionActive()
+{
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t,
+                                                "com/ezibyte/social/EziSocialManager",
+                                                "isFacebookSessionActive",
+                                                "(J)Z"))
+    {
+        jlong arg = (long)(void*)0;
+        jboolean result = t.env->CallStaticBooleanMethod(t.classID, t.methodID, arg);
+        t.env->DeleteLocalRef(t.classID);
+        
+        return (result == JNI_TRUE);
+    }
+    else
+    {
+        return false;
+    }
+    
+}
+
 bool EziSocialWrapperNS::networkAvailableForHost(const char* hostURL)
 {
     cocos2d::JniMethodInfo t;
@@ -208,40 +216,20 @@ bool EziSocialWrapperNS::networkAvailableForHost(const char* hostURL)
         return false;
     }
     
-    /*
-    cocos2d::JniMethodInfo t;
-    if (cocos2d::JniHelper::getMethodInfo(t,
-                                          "com/ezibyte/social/EziSocialManager",
-                                          "checkNetworkStatusInJava",
-                                          "()V"))
-    {
-        jstring  arg = t.env->NewStringUTF(hostURL);
-        //jboolean ret = t.env->CallBooleanMethod(t.classID, t.methodID);
-        t.env->CallStaticVoidMethod(t.classID, t.methodID);
-        t.env->DeleteLocalRef(arg);
-        t.env->DeleteLocalRef(t.classID);
-
-        //return ret == JNI_TRUE;
-        return JNI_TRUE;
-    }
-    else
-    {
-        return false;
-    }
-     */
 }
 
 // User details
-void EziSocialWrapperNS::fetchUserDetails(EziSocialWrapperNS::FBUserDetailCallback callback)
+void EziSocialWrapperNS::fetchUserDetails(EziSocialWrapperNS::FBUserDetailCallback callback, bool getEmailIDAlso)
 {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t,
                                                 "com/ezibyte/social/EziSocialManager",
                                                 "getUserDetails",
-                                                "(J)V"))
+                                                "(JZ)V"))
     {
         jlong arg = (long)(void*)callback;
-        t.env->CallStaticVoidMethod(t.classID, t.methodID, arg);
+        jboolean arg2 = getEmailIDAlso;
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, arg, arg2);
         t.env->DeleteLocalRef(t.classID);
     }
 }

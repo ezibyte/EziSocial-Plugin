@@ -1,10 +1,12 @@
 //
 //  EziSocialObject.cpp
-//  EziSocial
+//  EziSocialDemo
 //
 //  Created by Paras Mendiratta on 11/04/13.
-//  Copyright @EziByte 2013
 //
+//  EziByte (http://www.ezibyte.com)
+//
+
 /***
  
  This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
@@ -17,7 +19,8 @@
  
  3. This notice may not be removed or altered from any source distribution.
  
- */
+*/
+
 
 #include "EziSocialObject.h"
 #include "EziSocialDefinition.h"
@@ -275,14 +278,14 @@ void EziSocialObject::performLoginUsingFacebook()
 }
 
 
-void EziSocialObject::perfromLogoutFromFacebook()
+void EziSocialObject::performLogoutFromFacebook()
 {
     EziSocialWrapperNS::logoutFromFacebook(internalFBSessionCallback);
 }
 
-void EziSocialObject::fetchFBUserDetails()
+void EziSocialObject::fetchFBUserDetails(bool askForEmailID)
 {
-    EziSocialWrapperNS::fetchUserDetails(internalFBUserDetailCallBack);
+    EziSocialWrapperNS::fetchUserDetails(internalFBUserDetailCallBack, askForEmailID);
 }
 
 void EziSocialObject::getListOfFriendsUsingFBApp()
@@ -347,6 +350,12 @@ void EziSocialObject::openFacebookPage(const char* pageID, bool checkPageLikeOnA
         }
     }
 }
+
+bool EziSocialObject::isFacebookSessionActive()
+{
+    return EziSocialWrapperNS::isFacebookSessionActive();
+}
+
 
 // ---------------------------------------------------------
     #pragma mark - Twitter Methods
