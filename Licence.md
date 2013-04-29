@@ -7,6 +7,9 @@ EziSocial doesn't try to access or modify Facebook account or twitter account or
 
 All features listed below are driven by plugin user (i.e. developers using EziSocial plugin in their game).
 
+Disclaimer:
+==========
+EziSocial does not interfere with the Facebook account that developers tries to access. It just act as a channel to help developers for inheriting some of facebook and twitter features as www.ezibyte.com.
 
 Facebook
 --------
