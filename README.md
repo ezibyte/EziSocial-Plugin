@@ -41,14 +41,14 @@ To know about how to use this plugin, please visit site: http://www.ezibyte.com
 Version 1.0.1 - Pushed on 30th April 2013
 =========================================
 
-Added two new methods:
+Added one new method and modified one method. Details as follows:-
 
-1. bool isUserAlreadyLoginedToFacebook_Or_IsSessionActive = EziSocialObject::sharedObject()->isFacebookSessionActive();
+ 	bool isUserAlreadyLoginedToFacebook_Or_IsSessionActive = EziSocialObject::sharedObject()->isFacebookSessionActive();
 
 While app is running, anytime if you like to know if user is actually logined to Facebook or not. Or whether session is expired or not. Just simply called above method.
 There is no callback method of this and result will immediately return.
 
-2. EziSocialObject::sharedObject()->fetchFBUserDetails(true);
+	EziSocialObject::sharedObject()->fetchFBUserDetails(true);
 
 Definition of fetchUserDetails has been changed. Now you can actually fetch user email ID also. To get the user email ID, pass the value as true otherwise false.
 
@@ -60,10 +60,9 @@ HOW TO CHECK IF USER ALLOWED TO SEE HIS EMAIL ID OR NOT
 In case user decide not to send you the email ID then in callback method, within Data Dictionary an Error message will return.
 
 Use can check the error message as follows:-
-
--------- CODE START -----------
-
-if (data)
+	
+    
+    if (data)
     {
         if (data->objectForKey(KEY_FB_USER_ERROR))
         {
@@ -98,32 +97,29 @@ if (data)
         CCMessageBox("Sorry, user details not available", "fbUserDetailCallback");
     }
 
--------- CODE END -----------
+
 
 Android Changes
 ---------------
 
 To make this code working on Android side, you need to change onActivityResult(...) within Cocos2dxActivity as follows:-
 
--------- CODE START -----------
-
-@Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data)
+	  		
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		super.onActivityResult(requestCode, resultCode, data);
 		EziSocialManager.onActivityResult(requestCode, resultCode, data);
-		
 	}
-
--------- CODE END -----------
+	
 
 
 Debugging On Android
 --------------------
 
-In version 1.0.1, you can enable Android debugging by calling following method in Any Java Class:
+In version 1.0.1, you can enable Android debugging by calling following method in Any Java Class (prefer your MainActivity class):
 
-EziSocialManager.setEnableDebugLogs(false); // To disable logs. By Default, disable
+	EziSocialManager.setEnableDebugLogs(false); // To disable logs. By Default, disable
 
-EziSocialManager.setEnableDebugLogs(true); // To enable logs. By Default, disable
+	EziSocialManager.setEnableDebugLogs(true); // To enable logs. By Default, disable
 
