@@ -147,7 +147,7 @@ Version 1.1 - Logs
 8. **getFriends** also supports _startIndex_ and _limit_ on the result set.
 9. iOS Plugin code is updated to Facebook SDK v3.5.1 (latest)
 
-## Major changes on code signuatures
+## Major changes on code signatures
 
 ### Common to iOS and Android (CPP Code)
 
