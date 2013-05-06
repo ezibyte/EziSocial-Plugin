@@ -25,12 +25,35 @@
 #include "EziSocialObject.h"
 #include "EziSocialDefinition.h"
 #include "EziSocialDelegate.h"
+#include "cocos-ext.h"
+
+USING_NS_CC;
+USING_NS_CC_EXT;
 
 static EziSocialObject* sharedEziSocialObject;
 
 // ---------------------------------------------------------
-    #pragma mark - Private Methods - Helper Functions (C)
+#pragma mark - Private Methods - Helper Functions (C)
 // ---------------------------------------------------------
+
+cocos2d::CCArray* getArrayFromString(const char* commaSeperatedData)
+{
+    cocos2d::CCArray *resultArray = cocos2d::CCArray::create();
+    
+    std::vector<std::string> strings;
+    std::istringstream f(commaSeperatedData);
+    std::string s;
+    std::string lastID   = "";
+    std::string firstKey = "";
+    
+    
+    while (std::getline(f, s, ','))
+    {
+        resultArray->addObject(cocos2d::CCString::createWithFormat("%s", s.c_str(), NULL));
+    }
+    
+    return resultArray;
+}
 
 cocos2d::CCArray* getCustomizedArray(const char* data)
 {
@@ -114,7 +137,7 @@ cocos2d::CCDictionary* getCustomizedDictionary(const char* data)
 
 
 // ---------------------------------------------------------
-    #pragma mark - (C) Callback Methods
+#pragma mark - (C) Callback Methods
 // ---------------------------------------------------------
 
 void internalFBSessionCallback(int responseCode)
@@ -155,14 +178,14 @@ void internalFriendsCallback(const char* data)
     EziFacebookDelegate* tempFBDelegate;
     tempFBDelegate = EziSocialObject::sharedObject()->getFacebookDelegate();
     
-    CCLOG("Friend Callback = %s", data);
+    //CCLOG("Friend Callback = %s", data);
     
     if (tempFBDelegate)
     {
         tempFBDelegate->fbFriendsCallback(getCustomizedArray(data));
         //tempFBDelegate->fbFriendsCallback(friends);
     }
-
+    
 }
 
 void internalFBUserDetailCallBack(const char* data)
@@ -176,7 +199,7 @@ void internalFBUserDetailCallBack(const char* data)
     {
         tempFBDelegate->fbUserDetailCallback(getCustomizedDictionary(data));
     }
-
+    
 }
 
 void internalFBHighScoreCallBack(const char* data)
@@ -184,7 +207,7 @@ void internalFBHighScoreCallBack(const char* data)
     EziFacebookDelegate* tempFBDelegate;
     tempFBDelegate = EziSocialObject::sharedObject()->getFacebookDelegate();
     
-    CCLOG("HighScore = %s", data);
+    //CCLOG("HighScore = %s", data);
     
     if (tempFBDelegate)
     {
@@ -203,8 +226,48 @@ void internalMailCallBack(int responseCode)
     }
 }
 
+
+void internalUserPhotoCallback(const char* userPhoto)
+{
+    EziFacebookDelegate* tempFBDelegate;
+    tempFBDelegate = EziSocialObject::sharedObject()->getFacebookDelegate();
+    
+    if (tempFBDelegate)
+    {
+        tempFBDelegate->fbUserPhotoCallback(userPhoto);
+    }
+}
+
+void internalRequestSendCallback(int responseCode, const char* friendsGotRequestIDs)
+{
+    EziFacebookDelegate* tempFBDelegate;
+    tempFBDelegate = EziSocialObject::sharedObject()->getFacebookDelegate();
+    
+    if (tempFBDelegate)
+    {
+        tempFBDelegate->fbSendRequestCallback(responseCode, getArrayFromString(friendsGotRequestIDs));
+    }
+}
+
+void internalRequestRecieveCallback(int responseCode, const char* message, const char* senderName, const char* data)
+{
+    EziFacebookDelegate* tempFBDelegate;
+    tempFBDelegate = EziSocialObject::sharedObject()->getFacebookDelegate();
+    
+    if (tempFBDelegate)
+    {
+        tempFBDelegate->fbRecieveRequestCallback(responseCode, message, senderName, getCustomizedDictionary(data));
+    }
+}
+
+bool EziSocialObject::isFacebookSessionActive()
+{
+    return EziSocialWrapperNS::isFacebookSessionActive();
+}
+
+
 // ---------------------------------------------------------
-    #pragma mark - Destructor
+#pragma mark - Destructor
 // ---------------------------------------------------------
 
 EziSocialObject::~EziSocialObject()
@@ -213,7 +276,7 @@ EziSocialObject::~EziSocialObject()
 }
 
 // ---------------------------------------------------------
-    #pragma mark - Public Methods
+#pragma mark - Public Methods
 // ---------------------------------------------------------
 
 void EziSocialObject::setFacebookDelegate(EziFacebookDelegate *facebookDelegate)
@@ -247,7 +310,7 @@ EziEmailDelegate* EziSocialObject::getEmailDelegate()
 }
 
 // ---------------------------------------------------------
-    #pragma mark - Singleton Object
+#pragma mark - Singleton Object
 // ---------------------------------------------------------
 
 EziSocialObject::EziSocialObject()
@@ -255,6 +318,8 @@ EziSocialObject::EziSocialObject()
     mEmailDelegate    = NULL;
     mTwitterDelegate  = NULL;
     mFacebookDelegate = NULL;
+    
+    EziSocialWrapperNS::setRequestRecievedCallback(internalRequestRecieveCallback);
 }
 
 EziSocialObject*  EziSocialObject::sharedObject()
@@ -269,7 +334,7 @@ EziSocialObject*  EziSocialObject::sharedObject()
 
 
 // ---------------------------------------------------------
-    #pragma mark - Facebook Methods
+#pragma mark - Facebook Methods
 // ---------------------------------------------------------
 
 void EziSocialObject::performLoginUsingFacebook()
@@ -278,19 +343,30 @@ void EziSocialObject::performLoginUsingFacebook()
 }
 
 
-void EziSocialObject::performLogoutFromFacebook()
+void EziSocialObject::perfromLogoutFromFacebook()
 {
     EziSocialWrapperNS::logoutFromFacebook(internalFBSessionCallback);
 }
 
-void EziSocialObject::fetchFBUserDetails(bool askForEmailID)
+
+void EziSocialObject::fetchFBUserDetails(bool getEmailIDAlso)
 {
-    EziSocialWrapperNS::fetchUserDetails(internalFBUserDetailCallBack, askForEmailID);
+    EziSocialWrapperNS::fetchUserDetails(internalFBUserDetailCallBack, getEmailIDAlso);
 }
 
 void EziSocialObject::getListOfFriendsUsingFBApp()
 {
-    EziSocialWrapperNS::getListOfFriendsUsingThisApp(internalFriendsCallback);
+    this->getFriends(EziSocialWrapperNS::FB_FRIEND_SEARCH::ONLY_INSTALLED, 0, 0);
+}
+
+void EziSocialObject::getFriends(EziSocialWrapperNS::FB_FRIEND_SEARCH::TYPE searchType)
+{
+    this->getFriends(searchType, 0, 0);
+}
+
+void EziSocialObject::getFriends(EziSocialWrapperNS::FB_FRIEND_SEARCH::TYPE searchType, int startIndex, int limit)
+{
+    EziSocialWrapperNS::getFriends(internalFriendsCallback, searchType, startIndex, limit);
 }
 
 void EziSocialObject::hasUserLikedMyFBPage(const char *pageID)
@@ -351,14 +427,209 @@ void EziSocialObject::openFacebookPage(const char* pageID, bool checkPageLikeOnA
     }
 }
 
-bool EziSocialObject::isFacebookSessionActive()
+void EziSocialObject::sendRequestToFriends(EziSocialWrapperNS::FB_REQUEST::TYPE requestType,
+                                           const char* message,
+                                           cocos2d::CCArray *selectedFriendIDs,
+                                           cocos2d::CCDictionary *dataDictionary)
 {
-    return EziSocialWrapperNS::isFacebookSessionActive();
+    
+    std::string dataString      = "";
+    std::string friendsString   = "";
+    
+    if (dataDictionary)
+    {
+        cocos2d::CCArray *keys = dataDictionary->allKeys();
+        
+        for (int i=0; i<keys->count(); i++)
+        {
+            cocos2d::CCString* key = (cocos2d::CCString*)keys->objectAtIndex(i);
+            cocos2d::CCString* value = (cocos2d::CCString*)dataDictionary->objectForKey(key->getCString());
+            
+            if (i>0)
+            {
+                dataString.append(",");
+            }
+            
+            dataString.append(key->getCString());
+            dataString.append(",");
+            dataString.append(value->getCString());
+            
+        }
+        
+    }
+    
+    
+    if (selectedFriendIDs)
+    {
+        for (int i=0; i<selectedFriendIDs->count(); i++)
+        {
+            cocos2d::CCString* friendID = (cocos2d::CCString*)selectedFriendIDs->objectAtIndex(i);
+            
+            if (i>0)
+            {
+                friendsString.append(",");
+            }
+            
+            friendsString.append(friendID->getCString());
+            
+        }
+        
+    }
+    
+    EziSocialWrapperNS::sendRequest(internalRequestSendCallback,
+                                    requestType,
+                                    message,
+                                    dataString.c_str(),
+                                    friendsString.c_str());
+}
+
+void EziSocialObject::getProfilePicForID(const char* userFacebookID, bool forceDownload)
+{
+    CCString* downloadURL = CCString::createWithFormat("http://graph.facebook.com/%s/picture?type=square",
+                                                       userFacebookID);
+    
+    CCString* fileName = CCString::createWithFormat("%s_square.jpg", userFacebookID);
+    
+    this->downloadPhoto(downloadURL->getCString(), fileName->getCString(), forceDownload);
 }
 
 
+void EziSocialObject::getProfilePicForID(const char* userFacebookID,
+                                         EziSocialWrapperNS::FBUSER::PROFILE_PIC_TYPE picType,
+                                         bool forceDownload)
+{
+    
+    std::string downloadURL = "http://graph.facebook.com/";
+    downloadURL.append(userFacebookID);
+    downloadURL.append("/picture?type=");
+    
+    std::string fileName = "";
+    fileName.append(userFacebookID);
+    fileName.append("_");
+    
+    switch (picType)
+    {
+        case EziSocialWrapperNS::FBUSER::PIC_SQUARE:
+            downloadURL.append("square");
+            fileName.append("square");
+            break;
+            
+        case EziSocialWrapperNS::FBUSER::PIC_SMALL:
+            downloadURL.append("small");
+            fileName.append("small");
+            break;
+            
+        case EziSocialWrapperNS::FBUSER::PIC_NORMAL:
+            downloadURL.append("normal");
+            fileName.append("normal");
+            break;
+            
+        case EziSocialWrapperNS::FBUSER::PIC_LARGE:
+            downloadURL.append("large");
+            fileName.append("large");
+            break;
+            
+        default:
+            downloadURL.append("square");
+            fileName.append("square");
+            break;
+    }
+    
+    fileName.append(".jpg");
+    
+    this->downloadPhoto(downloadURL.c_str(), fileName.c_str(), forceDownload);
+    
+}
+void EziSocialObject::getProfilePicForID(const char* userFacebookID, int width, int height, bool forceDownload)
+{
+    
+    CCString* downloadURL = CCString::createWithFormat("http://graph.facebook.com/%s/picture?width=%d&height=%d",
+                                                       userFacebookID, width, height);
+    
+    CCString* fileName = CCString::createWithFormat("%s_%d_%d.jpg", userFacebookID, width, height);
+    
+    this->downloadPhoto(downloadURL->getCString(), fileName->getCString(), forceDownload);
+}
+
+void EziSocialObject::downloadPhoto(const char *fbID, const char* filename, bool forceDownloadFromServer)
+{
+    
+    if (forceDownloadFromServer == false) // Check if local copy exist
+    {
+        std::string file = cocos2d::CCFileUtils::sharedFileUtils()->getWritablePath().append(filename);
+        bool fileExist = cocos2d::CCFileUtils::sharedFileUtils()->isFileExist(file);
+        
+        if (fileExist)
+        {
+            //CCLOG("%s file exist already.", filename);
+            internalUserPhotoCallback(file.c_str());
+            return;
+        }
+    }
+    
+    // If we have reached here; that means local copy does not exsist. Download a new one.
+    
+    CCHttpRequest* request = new CCHttpRequest();
+    request->setUrl(fbID);
+    request->setRequestType(CCHttpRequest::kHttpGet);
+    request->setResponseCallback((CCNode*)mFacebookDelegate, callfuncND_selector(EziSocialObject::onHttpRequestCompleted));
+    request->setTag(filename);
+    
+    CCHttpClient::getInstance()->send(request);
+    request->release();
+}
+
+void EziSocialObject::onHttpRequestCompleted(cocos2d::CCNode *sender, void *data)
+{
+    //CCLOG("HTTP Request Completed...");
+    
+    CCHttpResponse* response = (CCHttpResponse*)data;
+    
+    if (!response)
+    {
+        CCLOG("No Response");
+    }
+    
+    if (0 != strlen(response->getHttpRequest()->getTag()))
+    {
+        //CCLog("%s completed", response->getHttpRequest()->getTag());
+    }
+    
+    int statusCode = response->getResponseCode();
+    
+    char statusString[64] = {};
+    sprintf(statusString, "HTTP Status Code: %d, tag = %s", statusCode, response->getHttpRequest()->getTag());
+    
+    if (!response->isSucceed())
+    {
+        CCLog("Cannot fetch user image");
+        CCLog("error buffer: %s", response->getErrorBuffer());
+        internalUserPhotoCallback("");
+        
+        return;
+    }
+    
+    // Dump the data
+    std::vector<char> *buffer = response->getResponseData();
+    //printf("Http Test, dump data: ");
+    
+    // Create the CCSprite from data dump...
+    
+    CCImage * img=new CCImage();
+    img->initWithImageData(&(buffer->front()), buffer->size());
+    
+    // Save file for resue.
+    std::string writablePath = CCFileUtils::sharedFileUtils()->getWritablePath();
+    writablePath.append(response->getHttpRequest()->getTag());
+    img->saveToFile(writablePath.c_str());
+    
+    internalUserPhotoCallback(writablePath.c_str());
+}
+
+
+
 // ---------------------------------------------------------
-    #pragma mark - Twitter Methods
+#pragma mark - Twitter Methods
 // ---------------------------------------------------------
 
 void EziSocialObject::tweet(const char* message, const char* imageURL)
@@ -377,7 +648,7 @@ void EziSocialObject::tweet(const char* message, const char* imageURL)
 }
 
 // ---------------------------------------------------------
-    #pragma mark - Email Methods
+#pragma mark - Email Methods
 // ---------------------------------------------------------
 
 void EziSocialObject::sendEmail(const char* subject, const char* htmlMessageBody, const char* semicolonSeperatedRecipents)
@@ -406,3 +677,4 @@ bool EziSocialObject::checkNetworkStatusForHost(const char *hostURL)
     }
     return EziSocialWrapperNS::networkAvailableForHost(hostURL);
 }
+

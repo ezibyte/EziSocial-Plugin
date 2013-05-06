@@ -34,11 +34,17 @@
 @property (assign) EziSocialWrapperNS::FBHighScoresCallback mHighScoreCallback;
 @property (assign) EziSocialWrapperNS::MailCallback mMailCallback;
 
+
+@property (assign) EziSocialWrapperNS::FBSendRequestCallback mSendRequestCallback;
+@property (assign) EziSocialWrapperNS::FBRecieveRequestCallback mRecieveRequestCallback;
+
+
 +(EziSocialManager*) sharedManager;
 
 -(BOOL) handleURL:(NSURL *)url;
 -(void) handleApplicationDidBecomeActive;
 -(void) handleApplicationLaunched;
+
 
 @property (strong, nonatomic) NSURL *mOpenedURL;
 @property (strong, nonatomic) NSMutableDictionary *mUserDictionary;
