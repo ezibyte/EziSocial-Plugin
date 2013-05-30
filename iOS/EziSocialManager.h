@@ -3,7 +3,9 @@
 //  EziSocial
 //
 //  Created by Paras Mendiratta on 11/04/13.
-//  Copyright @EziByte 2013
+//  Copyright @EziByte 2013 (http://www.ezibyte.com)
+//
+//  Version 1.2 (Dt: 30-May-2013)
 //
 /***
  
@@ -19,10 +21,14 @@
  
  */
 
+#include "Reachability.h"
 #include "EziSocialDefinition.h"
+#include <FacebookSDK/FacebookSDK.h>
 #import  <MessageUI/MessageUI.h>
 
-@interface EziSocialManager : NSObject <MFMailComposeViewControllerDelegate>
+
+@interface EziSocialManager : NSObject  <MFMailComposeViewControllerDelegate>
+
 {
     NSMutableDictionary* mAutoPostDictionary;
 }
@@ -31,23 +37,31 @@
 @property (assign) EziSocialWrapperNS::FBPageLikeCallback mPageLikeCallback;
 @property (assign) EziSocialWrapperNS::FBFriendsCallback mFriendsCallback;
 @property (assign) EziSocialWrapperNS::FBUserDetailCallback mUserDetailCallback;
-@property (assign) EziSocialWrapperNS::FBHighScoresCallback mHighScoreCallback;
+@property (assign) EziSocialWrapperNS::FBScoresCallback mScoreCallback;
+@property (assign) EziSocialWrapperNS::FBPhotoPostCallback mPhotoPostCallback;
+@property (assign) EziSocialWrapperNS::FBIncomingRequestCallback mIncomingCallback;
+
+// Mail
 @property (assign) EziSocialWrapperNS::MailCallback mMailCallback;
 
-
+// Facebook App Request
 @property (assign) EziSocialWrapperNS::FBSendRequestCallback mSendRequestCallback;
 @property (assign) EziSocialWrapperNS::FBRecieveRequestCallback mRecieveRequestCallback;
 
+@property (assign) EziSocialWrapperNS::TwitterCallback mTwitterCallback;
+
+//@property (strong, nonatomic) Reachability* reachability;
 
 +(EziSocialManager*) sharedManager;
 
 -(BOOL) handleURL:(NSURL *)url;
 -(void) handleApplicationDidBecomeActive;
 -(void) handleApplicationLaunched;
+//-(BOOL) isFacebookSessionActive;
 
+@property (assign) BOOL autoCheckIncomingOnAppActiveOrLoginSuccess;
 
 @property (strong, nonatomic) NSURL *mOpenedURL;
 @property (strong, nonatomic) NSMutableDictionary *mUserDictionary;
-
 
 @end

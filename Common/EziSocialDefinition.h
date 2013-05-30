@@ -1,11 +1,12 @@
 //
 //  EziSocialDefinition.h
-//  EziScoailDemo
+//  EziSocial
 //
 //  Created by Paras Mendiratta on 11/04/13.
-//  EziByte (http://www.ezibyte.com)
+//  Copyright @EziByte 2013 (http://www.ezibyte.com)
 //
-
+//  Version 1.2 (Dt: 30-May-2013)
+//
 /***
  
  This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
@@ -18,8 +19,7 @@
  
  3. This notice may not be removed or altered from any source distribution.
  
-*/
-
+ */
 
 
 #ifndef FacebookGameDemo_EziSocialDefinition_h
@@ -32,10 +32,11 @@
 #define APPCONTROLLER_HEADER       "AppController.h"
 #define APPCONTROLLER_CLASS_NAME   AppController
 
+// For CCUserDefault.
+#define KEY_EZI_CURRENT_FB_USER_ID  "EZI_FB_CURRENT_USER_ID"
 
-
-//#define ENABLE_MAIL_FUNCTIONALITY
-//#define ENABLE_TWITTER_FUNCTIONALITY
+#define ENABLE_MAIL_FUNCTIONALITY
+#define ENABLE_TWITTER_FUNCTIONALITY
 
 #define KEY_FB_USER_ERROR               "error"
 #define KEY_FB_USER_NAME                "username"
@@ -47,6 +48,14 @@
 #define KEY_FB_USER_FIRST_NAME          "first_name"
 #define KEY_FB_USER_LAST_NAME           "last_name"
 #define KEY_FB_USER_ACCESS_TOKEN        "token"
+
+// This value defines the number of records can be hold by Completed Requests List.
+#define MAX_COMPLETED_REQUEST_ID_TO_HOLD 20
+
+// This clears the top 10 records from the completed request list. Change the value if don't want to clear it.
+#define NUMBER_OF_AUTO_PURGE_TOP_COMPLETED_IDS 10
+
+#include <iostream>
 
 namespace EziSocialWrapperNS
 {
@@ -71,19 +80,24 @@ namespace EziSocialWrapperNS
         };
     };
     
-    typedef void (*FBSessionCallback)(int);
-    typedef void (*FBMessageCallback)(int);
-    typedef void (*FBPageLikeCallback) (int);
-    typedef void (*FBFriendsCallback)(const char*);
-    typedef void (*FBHighScoresCallback)(const char*);
-    typedef void (*FBUserDetailCallback)(const char*);
+    typedef void (*FBSessionCallback)(int, const char*, const char*);
+    typedef void (*FBMessageCallback)(int, const char*);
+    typedef void (*FBPageLikeCallback) (int, const char*);
+    typedef void (*FBFriendsCallback)(int, const char*, const char*);
+    typedef void (*FBScoresCallback)(int, const char*, const char*);
+    typedef void (*FBUserDetailCallback)(int, const char*, const char*);
+    typedef void (*FBPhotoPostCallback)(int, const char*);
     typedef void (*MailCallback)(int);
     
     //typedef void (*FBPUserPhotoCallback)(const char*);
     
     // Request Callbacks
-    typedef void (*FBSendRequestCallback)(int, const char*);
-    typedef void (*FBRecieveRequestCallback)(int, const char*, const char*, const char*);
+    typedef void (*FBSendRequestCallback)(int, const char*, const char*);
+    typedef void (*FBIncomingRequestCallback)(int, const char*, const char*);
+    typedef void (*FBRecieveRequestCallback)(int, const char*, const char*, const char*, const char*, const char*, const char*, const char*);
+    
+    // Twitter Callback
+    typedef void (*TwitterCallback)(int);
     
     
     struct FBUSER
@@ -101,19 +115,53 @@ namespace EziSocialWrapperNS
     {
         enum
         {
-            // Login response code
-            FB_LOGIN_NO_TOKEN           = 0,
-            FB_LOGIN_SUCCESSFUL         = FB_LOGIN_NO_TOKEN     + 1,
+            // Internet connection error while making the request.
+            ERROR_INTERNET_NOT_AVAILABLE            = 0,
+            ERROR_READ_PERMISSION_ERROR             = ERROR_INTERNET_NOT_AVAILABLE + 1,
+            ERROR_PUBLISH_PERMISSION_ERROR          = ERROR_READ_PERMISSION_ERROR + 1,
+            
+            // This appears if user has not setup Facebook account in iOS device settings
+            FB_LOGIN_MISSING_IOS_6_ACCOUNT      = ERROR_PUBLISH_PERMISSION_ERROR + 1,
+            
+            // This comes if user has revoked the permission in his Facebook account to use your app.
+            FB_LOGIN_USER_PERMISSION_REVOKED         = FB_LOGIN_MISSING_IOS_6_ACCOUNT + 1,
+            
+            // This comes if in the device settings, user has denied the Faccebook to your game.
+            FB_LOGIN_APP_NOT_ALLOWERD_TO_USE_FB = FB_LOGIN_USER_PERMISSION_REVOKED + 1,
+            
+            // We frist needs the read permission before we actually ask for the publish permsision - iOS 6 issue.
+            FB_LOGIN_FIRST_NEEDS_READ_PERMISSION = FB_LOGIN_APP_NOT_ALLOWERD_TO_USE_FB + 1,
+            
+            
+            // This comes if user don't allow to give permission to use his facebook account for any activity.
+            FB_LOGIN_PERMISSION_DENIED = FB_LOGIN_FIRST_NEEDS_READ_PERMISSION + 1,
+            
+            FB_LOGIN_SUCCESSFUL         = FB_LOGIN_PERMISSION_DENIED     + 1,
             FB_LOGIN_FAILED             = FB_LOGIN_SUCCESSFUL   + 1,
             FB_LOGOUT_SUCCESSFUL        = FB_LOGIN_FAILED       + 1,
             
+            FB_USER_DETAIL_ERROR        = FB_LOGOUT_SUCCESSFUL + 1,
+            FB_USER_DETAIL_SUCCESS      = FB_USER_DETAIL_ERROR + 1,
+            
             // Message for user wall
-            FB_MESSAGE_PUBLISHING_ERROR = FB_LOGOUT_SUCCESSFUL          + 1,
-            FB_MESSAGE_CANCELLLED       = FB_MESSAGE_PUBLISHING_ERROR   + 1,
-            FB_MESSAGE_PUBLISHED        = FB_MESSAGE_CANCELLLED         + 1,
+            FB_NORMAL_MESSAGE_ERROR     = FB_USER_DETAIL_SUCCESS        + 1,
+            FB_NORMAL_MESSAGE_CANCELLED = FB_NORMAL_MESSAGE_ERROR       + 1,
+            FB_NORMAL_MESSAGE_PUBLISHED = FB_NORMAL_MESSAGE_CANCELLED   + 1,
+            
+            // Auto Post Message on User Wall
+            FB_AUTO_MESSAGE_ERROR       = FB_NORMAL_MESSAGE_PUBLISHED   + 1,
+            FB_AUTO_MESSAGE_PUBLISHED   = FB_AUTO_MESSAGE_ERROR         + 1,
+            
+            // Submit Score to Facebook
+            FB_SCORE_POSTING_ERROR      = FB_AUTO_MESSAGE_PUBLISHED     + 1,
+            FB_SCORE_POSTED             = FB_SCORE_POSTING_ERROR        + 1,
+            FB_SCORE_DELETE_ERROR       = FB_SCORE_POSTED               + 1,
+            FB_SCORE_DELETED            = FB_SCORE_DELETE_ERROR         + 1,
+            FB_HIGH_SCORE_GET_ERROR     = FB_SCORE_DELETED              + 1,
+            FB_HIGH_SCORE_SUCCESS       = FB_HIGH_SCORE_GET_ERROR       + 1,
             
             // Gift Items
-            FB_GIFT_SENDING_ERROR       = FB_MESSAGE_PUBLISHED      + 1,
+            FB_GIFT_SENDING_ERROR       = FB_HIGH_SCORE_SUCCESS     + 1,
             FB_GIFT_SENDING_CANCELLED   = FB_GIFT_SENDING_ERROR     + 1,
             FB_GIFT_SENT                = FB_GIFT_SENDING_CANCELLED + 1,
             
@@ -127,28 +175,41 @@ namespace EziSocialWrapperNS
             FB_INVITE_CANCELLED         = FB_INVITE_SENDING_ERROR   + 1,
             FB_INVITE_SENT              = FB_INVITE_CANCELLED       + 1,
             
-            
             // Page Like
             FB_PAGELIKE_ERROR           = FB_INVITE_SENT        + 1,
             FB_PAGELIKE_NEGATIVE        = FB_PAGELIKE_ERROR     + 1,
             FB_PAGELIKE_POSITIVE        = FB_PAGELIKE_NEGATIVE  + 1,
             
+            // Facebook Friends
+            FB_FRIEND_GET_ERROR         = FB_PAGELIKE_POSITIVE    + 1,
+            FB_FRIEND_GET_SUCCESS       = FB_FRIEND_GET_ERROR     + 1,
+            
             // Email Response Code
-            MAIL_SEND_ERROR             = FB_PAGELIKE_POSITIVE  + 1,
+            MAIL_SEND_ERROR             = FB_FRIEND_GET_SUCCESS + 1,
             MAIL_SEND_SUCCESS           = MAIL_SEND_ERROR       + 1,
             MAIL_SEND_CANCLLED          = MAIL_SEND_SUCCESS     + 1,
             MAIL_SEND_STORED            = MAIL_SEND_CANCLLED    + 1,
             
             // Recieve
-            FB_REQUEST_RECEIVE_PARSING_ERROR   = MAIL_SEND_STORED                 + 1,
-            FB_REQUEST_RECEIVE_SESSION_ERROR   = FB_REQUEST_RECEIVE_PARSING_ERROR + 1,
+            FB_REQUEST_RECEIVE_ALREADY_FETCHED_ERROR    = MAIL_SEND_STORED                          + 1,
+            FB_REQUEST_RECEIVE_SESSION_ERROR            = FB_REQUEST_RECEIVE_ALREADY_FETCHED_ERROR  + 1,
             
-            FB_CHALLENGE_RECEIVE  = FB_REQUEST_RECEIVE_SESSION_ERROR + 1,
-            FB_GIFT_RECEIVE       = FB_CHALLENGE_RECEIVE             + 1,
-            FB_INVITE_RECEIVE     = FB_GIFT_RECEIVE                  + 1
+            FB_INCOMING_REQUEST_ERROR   = FB_REQUEST_RECEIVE_SESSION_ERROR + 1,
+            FB_INCOMING_REQUEST_NEW     = FB_INCOMING_REQUEST_ERROR        + 1,
+            FB_NO_NEW_INCOMING_REQUEST  = FB_INCOMING_REQUEST_NEW          + 1,
             
+            FB_CHALLENGE_RECEIVE  = FB_NO_NEW_INCOMING_REQUEST  + 1,
+            FB_GIFT_RECEIVE       = FB_CHALLENGE_RECEIVE        + 1,
+            FB_INVITE_RECEIVE     = FB_GIFT_RECEIVE             + 1,
             
+            // Post Photo Callback
+            FB_INVALID_IMAGE_FILE = FB_INVITE_RECEIVE       + 1,
+            FB_PHOTO_POST_ERROR   = FB_INVALID_IMAGE_FILE   + 1,
+            FB_PHOTO_POST_SUCCESS = FB_PHOTO_POST_ERROR     + 1,
             
+            // Twitter Response Code
+            TWIT_SEND   = FB_PHOTO_POST_SUCCESS + 1,
+            TWIT_CANCEL = TWIT_SEND             + 1
         };
     };
     
@@ -157,6 +218,7 @@ namespace EziSocialWrapperNS
     void postMessage(FBMessageCallback callback,
                      const char* heading,
                      const char* caption,
+                     const char* message,
                      const char* description,
                      const char* badgeIconURL,
                      const char* deepLinkURL);
@@ -164,6 +226,7 @@ namespace EziSocialWrapperNS
     void autoPostMessageOnWall(FBMessageCallback callback,
                                const char* heading,
                                const char* caption,
+                               const char* message,
                                const char* description,
                                const char* badgeIconURL,
                                const char* deepLinkURL);
@@ -172,11 +235,14 @@ namespace EziSocialWrapperNS
     void postScore(EziSocialWrapperNS::FBMessageCallback callback,
                    unsigned long long score);
     
+    // Deletes the user score from the Facebook.
+    void deleteScore(EziSocialWrapperNS::FBMessageCallback callback);
+    
     // User details
     void fetchUserDetails(FBUserDetailCallback callback, bool getEmailIDAlso);
     
     // User login / logout
-    void loginWithFacebook(FBSessionCallback callback);
+    void loginWithFacebook(FBSessionCallback callback, bool needsPublishPermission);
     void logoutFromFacebook(FBSessionCallback callback);
     
     // Check if user has liked my page
@@ -186,11 +252,19 @@ namespace EziSocialWrapperNS
     void getFriends(FBFriendsCallback callback, FB_FRIEND_SEARCH::TYPE searchType, int startIndex, int limit);
     
     // Get the high score of user and his friends.
-    void getHighScores(FBHighScoresCallback callback);
+    void getHighScores(FBScoresCallback callback);
     
     // Open Facebook Page and on returing back to application, check if user likes Facebook page.
     void openFacebookPage(const char* pageID, bool checkPageLike, FBPageLikeCallback callback);
     
+    // Post the image on facebook user wall.
+    void postPhoto(const char* imageFileName, const char* message, FBPhotoPostCallback callback);
+    
+    /*
+     // Get the user photo.
+     void getUserPhoto(FBPUserPhotoCallback callback, FBUSER::PROFILE_PIC_TYPE picType, int width, int height);
+     void getUserPhoto(FBPUserPhotoCallback callback, FBUSER::PROFILE_PIC_TYPE picType, int width, int height, const char* fbuid);
+     */
     
     void sendRequest(FBSendRequestCallback callback,
                      FB_REQUEST::TYPE requestType,
@@ -198,12 +272,16 @@ namespace EziSocialWrapperNS
                      const char* dataDictionary,
                      const char* preselectedFriends);
     
-    void setRequestRecievedCallback(FBRecieveRequestCallback callback);
+    void processRequestID(FBRecieveRequestCallback callback, const char* requestID);
+    
+    void setIncomingRequestCallback(FBIncomingRequestCallback callback, FBRecieveRequestCallback requestCallback);
+    
+    void checkIncomingRequests();
     
     bool isFacebookSessionActive();
     
     // Twitter Methods...
-    void tweet(const char* message, const char* imageURL);
+    void tweet(TwitterCallback callback, const char* message, const char* imageURL);
     
     // Email Methods
     void sendEmail(const char* subject, const char* messageBody, const char* recipents, MailCallback callback);
@@ -213,4 +291,5 @@ namespace EziSocialWrapperNS
     
     
 }
+
 #endif

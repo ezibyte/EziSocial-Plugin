@@ -1,9 +1,11 @@
 //
 //  JNI_EziSocialManager.cpp
-//  EziSocial Plugin
+//  EziSocial
 //
 //  Created by Paras Mendiratta on 11/04/13.
+//  Copyright @EziByte 2013 (http://www.ezibyte.com)
 //
+//  Version 1.2 (Dt: 30-May-2013)
 //
 /***
  
@@ -24,6 +26,7 @@
 #include "EziSocialObject.h"
 #include <string.h>
 #include <jni.h>
+#include <iostream>
 
 #include JNI_HELPER_PATH
 #include CCCOMMON_PATH
@@ -31,7 +34,7 @@
 #pragma mark - Facebook Login/Logout/Session Check
 
 // User Login
-void EziSocialWrapperNS::loginWithFacebook(EziSocialWrapperNS::FBSessionCallback callback)
+void EziSocialWrapperNS::loginWithFacebook(EziSocialWrapperNS::FBSessionCallback callback, bool needsPublishPermission)
 {
     //cocos2d::CCMessageBox("Menu Action: Login Via Facebook pressed", "Login - Facebook (JNI)");
     
@@ -39,10 +42,12 @@ void EziSocialWrapperNS::loginWithFacebook(EziSocialWrapperNS::FBSessionCallback
     if (cocos2d::JniHelper::getStaticMethodInfo(t,
                                                 "com/ezibyte/social/EziSocialManager",
                                                 "loginWithFacebook",
-                                                "(J)V"))
+                                                "(JZ)V"))
     {
         jlong arg = (long)(void*)callback;
-        t.env->CallStaticVoidMethod(t.classID, t.methodID, arg);
+        jboolean argPublish = needsPublishPermission;
+        
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, arg, argPublish);
         t.env->DeleteLocalRef(t.classID);
     }
     
@@ -91,6 +96,7 @@ void EziSocialWrapperNS::logoutFromFacebook(EziSocialWrapperNS::FBSessionCallbac
 void EziSocialWrapperNS::postMessage(EziSocialWrapperNS::FBMessageCallback callback,
                                      const char* heading,
                                      const char* caption,
+                                     const char* message,
                                      const char* description,
                                      const char* badgeIconURL,
                                      const char* deepLinkURL)
@@ -99,18 +105,21 @@ void EziSocialWrapperNS::postMessage(EziSocialWrapperNS::FBMessageCallback callb
     if (cocos2d::JniHelper::getStaticMethodInfo(t,
                                                 "com/ezibyte/social/EziSocialManager",
                                                 "postMessageOnWall",
-                                                "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"))
+                                                "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"))
     {
         jlong arg = (long)(void*)callback;
         jstring headingArg = t.env->NewStringUTF(heading);
         jstring captionArg = t.env->NewStringUTF(caption);
+        jstring messageArg = t.env->NewStringUTF(message);
         jstring descArg = t.env->NewStringUTF(description);
         jstring badgeArg = t.env->NewStringUTF(badgeIconURL);
         jstring deepArg = t.env->NewStringUTF(deepLinkURL);
-        t.env->CallStaticVoidMethod(t.classID, t.methodID, arg, headingArg, captionArg, descArg, badgeArg, deepArg);
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, arg, headingArg, captionArg, messageArg, descArg, badgeArg, deepArg);
         
+        // Clean up
         t.env->DeleteLocalRef(headingArg);
         t.env->DeleteLocalRef(captionArg);
+        t.env->DeleteLocalRef(messageArg);
         t.env->DeleteLocalRef(descArg);
         t.env->DeleteLocalRef(badgeArg);
         t.env->DeleteLocalRef(deepArg);
@@ -122,6 +131,7 @@ void EziSocialWrapperNS::postMessage(EziSocialWrapperNS::FBMessageCallback callb
 void EziSocialWrapperNS::autoPostMessageOnWall(EziSocialWrapperNS::FBMessageCallback callback,
                                                const char* heading,
                                                const char* caption,
+                                               const char* message,
                                                const char* description,
                                                const char* badgeIconURL,
                                                const char* deepLinkURL)
@@ -130,24 +140,49 @@ void EziSocialWrapperNS::autoPostMessageOnWall(EziSocialWrapperNS::FBMessageCall
     if (cocos2d::JniHelper::getStaticMethodInfo(t,
                                                 "com/ezibyte/social/EziSocialManager",
                                                 "autoPostMessageOnWall",
-                                                "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"))
+                                                "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"))
     {
         jlong arg = (long)(void*)callback;
         jstring headingArg = t.env->NewStringUTF(heading);
         jstring captionArg = t.env->NewStringUTF(caption);
+        jstring messageArg = t.env->NewStringUTF(message);
         jstring descArg = t.env->NewStringUTF(description);
         jstring badgeArg = t.env->NewStringUTF(badgeIconURL);
         jstring deepArg = t.env->NewStringUTF(deepLinkURL);
-        t.env->CallStaticVoidMethod(t.classID, t.methodID, arg, headingArg, captionArg, descArg, badgeArg, deepArg);
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, arg, headingArg, captionArg, messageArg, descArg, badgeArg, deepArg);
         
         t.env->DeleteLocalRef(headingArg);
         t.env->DeleteLocalRef(captionArg);
+        t.env->DeleteLocalRef(messageArg);
         t.env->DeleteLocalRef(descArg);
         t.env->DeleteLocalRef(badgeArg);
         t.env->DeleteLocalRef(deepArg);
         t.env->DeleteLocalRef(t.classID);
     }
     
+}
+
+void EziSocialWrapperNS::postPhoto(const char* imageFileName, const char* message, EziSocialWrapperNS::FBPhotoPostCallback callback)
+{
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t,
+                                                "com/ezibyte/social/EziSocialManager",
+                                                "postPhoto",
+                                                "(JLjava/lang/String;Ljava/lang/String;)V"))
+    {
+        CCLOG("I am in JNI - PostPhoto");
+        
+        jlong   callbackArg      = (long)(void*)callback;
+        jstring imageFileNameArg = t.env->NewStringUTF(imageFileName);
+        jstring messageArg       = t.env->NewStringUTF(message);
+        
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, callbackArg, imageFileNameArg, messageArg);
+        
+        // Clean up
+        t.env->DeleteLocalRef(imageFileNameArg);
+        t.env->DeleteLocalRef(messageArg);
+        t.env->DeleteLocalRef(t.classID);
+    }
 }
 
 void EziSocialWrapperNS::postScore(EziSocialWrapperNS::FBMessageCallback callback,
@@ -168,6 +203,20 @@ void EziSocialWrapperNS::postScore(EziSocialWrapperNS::FBMessageCallback callbac
         t.env->DeleteLocalRef(t.classID);
     }
     
+}
+
+void EziSocialWrapperNS::deleteScore(EziSocialWrapperNS::FBMessageCallback callback)
+{
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, "com/ezibyte/social/EziSocialManager", "deleteScore", "(J)V"))
+    {
+        jlong arg = (long)(void*)callback;
+        
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, arg);
+        
+        // Clean up
+        t.env->DeleteLocalRef(t.classID);
+    }
 }
 
 #pragma mark - Facebook Page Methods
@@ -211,7 +260,7 @@ void EziSocialWrapperNS::hasUserLikePage(EziSocialWrapperNS::FBPageLikeCallback 
 
 #pragma mark - Facebook Friends
 
-void EziSocialWrapperNS::getHighScores(EziSocialWrapperNS::FBHighScoresCallback callback)
+void EziSocialWrapperNS::getHighScores(EziSocialWrapperNS::FBScoresCallback callback)
 {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t,
@@ -254,19 +303,55 @@ void EziSocialWrapperNS::sendRequest(EziSocialWrapperNS::FBSendRequestCallback c
     }
 }
 
-void EziSocialWrapperNS::setRequestRecievedCallback(EziSocialWrapperNS::FBRecieveRequestCallback callback)
+void EziSocialWrapperNS::processRequestID (EziSocialWrapperNS::FBRecieveRequestCallback callback, const char* requestID)
 {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t,
                                                 "com/ezibyte/social/EziSocialManager",
-                                                "setRequestReceiveCallbackAddress",
-                                                "(J)V"))
+                                                "processRequestID",
+                                                "(JLjava/lang/String;)V"))
     {
         jlong arg = (long)(void*)callback;
+        jstring requestIDArg = t.env->NewStringUTF(requestID);
+        
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, arg, requestIDArg);
+        
+        t.env->DeleteLocalRef(requestIDArg);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
+void EziSocialWrapperNS::setIncomingRequestCallback (EziSocialWrapperNS::FBIncomingRequestCallback callback,
+                                                     EziSocialWrapperNS::FBRecieveRequestCallback requestCallback)
+{
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t,
+                                                "com/ezibyte/social/EziSocialManager",
+                                                "setIncomingRequestCallback",
+                                                "(JJ)V"))
+    {
+        jlong incomingCallbackArg  = (long)(void*)callback;
+        jlong requestCallbackArg   = (long)(void*)requestCallback;
+        
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, incomingCallbackArg, requestCallbackArg);
+        
+        // Clean up
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
+void EziSocialWrapperNS::checkIncomingRequests()
+{
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t,
+                                                "com/ezibyte/social/EziSocialManager",
+                                                "anyIncomingRequest",
+                                                "(J)V"))
+    {
+        jlong arg = (long)(void*)0;
         t.env->CallStaticVoidMethod(t.classID, t.methodID, arg);
         t.env->DeleteLocalRef(t.classID);
     }
-    
 }
 
 #pragma mark - Facebook User details
@@ -311,7 +396,7 @@ void EziSocialWrapperNS::getFriends(EziSocialWrapperNS::FBFriendsCallback callba
 
 #pragma mark - Twitter - Tweet
 
-void EziSocialWrapperNS::tweet(const char* message, const char* imageURL)
+void EziSocialWrapperNS::tweet(EziSocialWrapperNS::TwitterCallback callback, const char* message, const char* imageURL)
 {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t,
@@ -392,45 +477,77 @@ extern "C"
 	void Java_com_ezibyte_social_EziSocialManager_nativeFBSessionRequestComplete(JNIEnv* env,
                                                                                  jobject thiz,
                                                                                  jlong callback_address,
-                                                                                 jint responseCode)
+                                                                                 jint responseCode,
+                                                                                 jstring responseMessage,
+                                                                                 jstring facebookUserID)
 	{
 		if (callback_address)
         {
-			(*reinterpret_cast<EziSocialWrapperNS::FBSessionCallback>(callback_address))(responseCode);
+            const char *responseMessageRawString = env->GetStringUTFChars(responseMessage, 0);
+            const char *facebookUSerIDRawString  = env->GetStringUTFChars(facebookUserID, 0);
+            
+			(*reinterpret_cast<EziSocialWrapperNS::FBSessionCallback>(callback_address))(responseCode, responseMessageRawString, facebookUSerIDRawString);
+            
+            // Clean up
+            env->ReleaseStringUTFChars(responseMessage, responseMessageRawString);
+            env->ReleaseStringUTFChars(facebookUserID, facebookUSerIDRawString);
+            
         }
 	}
     
     void Java_com_ezibyte_social_EziSocialManager_nativeFBMessageRequestComplete(JNIEnv* env,
                                                                                  jobject thiz,
                                                                                  jlong callback_address,
-                                                                                 jint responseCode)
+                                                                                 jint responseCode, jstring responseMessage)
 	{
 		if (callback_address)
         {
-			(*reinterpret_cast<EziSocialWrapperNS::FBMessageCallback>(callback_address))(responseCode);
+            const char *responseMessageRawString = env->GetStringUTFChars(responseMessage, 0);
+			(*reinterpret_cast<EziSocialWrapperNS::FBMessageCallback>(callback_address))(responseCode, responseMessageRawString);
+            
+            // Clean up
+            env->ReleaseStringUTFChars(responseMessage, responseMessageRawString);
+            
+            
         }
 	}
     
     void Java_com_ezibyte_social_EziSocialManager_nativeFBPageLikeRequestComplete(JNIEnv* env,
                                                                                   jobject thiz,
                                                                                   jlong callback_address,
-                                                                                  jint responseCode)
+                                                                                  jint responseCode, jstring responseMessage)
 	{
 		if (callback_address)
         {
-			(*reinterpret_cast<EziSocialWrapperNS::FBPageLikeCallback>(callback_address))(responseCode);
+            const char *responseMessageRawString = env->GetStringUTFChars(responseMessage, 0);
+            
+			(*reinterpret_cast<EziSocialWrapperNS::FBPageLikeCallback>(callback_address))(responseCode, responseMessageRawString);
+            
+            // Clean up
+            env->ReleaseStringUTFChars(responseMessage, responseMessageRawString);
         }
 	}
     
     void Java_com_ezibyte_social_EziSocialManager_nativeFBFriendsRequestComplete(JNIEnv* env,
                                                                                  jobject thiz,
                                                                                  jlong callback_address,
+                                                                                 jint responseCode,
+                                                                                 jstring responseMessage,
                                                                                  jstring resultString)
     {
         if (callback_address)
         {
+            const char *responseMessageRawString = env->GetStringUTFChars(responseMessage, 0);
+            
+            
             const char* resultData = env->GetStringUTFChars(resultString, 0);
-            (*reinterpret_cast<EziSocialWrapperNS::FBFriendsCallback>(callback_address))(resultData);
+            
+            (*reinterpret_cast<EziSocialWrapperNS::FBFriendsCallback>(callback_address))(responseCode, responseMessageRawString, resultData);
+            
+            // Clean up
+            env->ReleaseStringUTFChars(responseMessage, responseMessageRawString);
+            env->ReleaseStringUTFChars(resultString, resultData);
+            
         }
         
         //env->DeleteLocalRef(stringArray);
@@ -439,12 +556,19 @@ extern "C"
     void Java_com_ezibyte_social_EziSocialManager_nativeFBUserDetailsRequestComplete(JNIEnv* env,
                                                                                      jobject thiz,
                                                                                      jlong callback_address,
-                                                                                     jstring response)
+                                                                                     jint responseCode,
+                                                                                     jstring responseMessage, jstring userDetailString)
     {
         if (callback_address)
         {
-            const char *rawString = env->GetStringUTFChars(response, 0);
-            (*reinterpret_cast<EziSocialWrapperNS::FBUserDetailCallback>(callback_address))(rawString);
+            const char* rawResponseMessage = env->GetStringUTFChars(responseMessage, 0);            
+            const char* rawUserDetails = env->GetStringUTFChars(userDetailString, 0);
+            
+            (*reinterpret_cast<EziSocialWrapperNS::FBUserDetailCallback>(callback_address))(responseCode, rawResponseMessage, rawUserDetails);
+            
+            // Clean up
+            env->ReleaseStringUTFChars(responseMessage, rawResponseMessage);
+            env->ReleaseStringUTFChars(userDetailString, rawUserDetails);
             
         }
     }
@@ -463,12 +587,19 @@ extern "C"
     void Java_com_ezibyte_social_EziSocialManager_nativeFBHighScoreRequestComplete(JNIEnv* env,
                                                                                    jobject thiz,
                                                                                    jlong callback_address,
-                                                                                   jstring response)
+                                                                                   jint responseCode, jstring responseMessage,
+                                                                                   jstring friendList)
 	{
 		if (callback_address)
         {
-            const char *rawString = env->GetStringUTFChars(response, 0);
-			(*reinterpret_cast<EziSocialWrapperNS::FBHighScoresCallback>(callback_address))(rawString);
+            const char *responseMessageRawString = env->GetStringUTFChars(responseMessage, 0);
+            const char *friendListRawString = env->GetStringUTFChars(friendList, 0);
+            
+			(*reinterpret_cast<EziSocialWrapperNS::FBScoresCallback>(callback_address))(responseCode, responseMessageRawString,friendListRawString);
+            
+            // Clean up
+            env->ReleaseStringUTFChars(responseMessage, responseMessageRawString);
+            env->ReleaseStringUTFChars(friendList, friendListRawString);
         }
 	}
     
@@ -476,13 +607,19 @@ extern "C"
                                                                             jobject thiz,
                                                                             jlong callback_address,
                                                                             jint  responseCode,
-                                                                            jstring responseData)
+                                                                            jstring responseMessage, jstring recipentIDs)
 	{
 		if (callback_address)
         {
             int responseCodeInt = (int)responseCode;
-            const char *rawString = env->GetStringUTFChars(responseData, 0);
-			(*reinterpret_cast<EziSocialWrapperNS::FBSendRequestCallback>(callback_address))(responseCodeInt, rawString);
+            const char *responseMessageRaw = env->GetStringUTFChars(responseMessage, 0);
+            const char *recipentIDsRaw = env->GetStringUTFChars(recipentIDs, 0);
+            
+			(*reinterpret_cast<EziSocialWrapperNS::FBSendRequestCallback>(callback_address))(responseCodeInt, responseMessageRaw, recipentIDsRaw);
+            
+            // Clean up
+            env->ReleaseStringUTFChars(responseMessage, responseMessageRaw);
+            env->ReleaseStringUTFChars(recipentIDs, recipentIDsRaw);
         }
 	}
     
@@ -490,22 +627,76 @@ extern "C"
                                                                                 jobject thiz,
                                                                                 jlong callback_address,
                                                                                 jint responseCode,
+                                                                                jstring processedRequestID,
                                                                                 jstring message,
-                                                                                jstring senderName,
-                                                                                jstring data)
+                                                                                jstring senderID,
+                                                                                jstring senderName, jstring receiverID,
+                                                                                jstring data, jstring responseMessage)
 	{
 		if (callback_address)
         {
-            const char *rawMessage    = env->GetStringUTFChars(message, 0);
-            const char *rawSenderName = env->GetStringUTFChars(senderName, 0);
-            const char *rawData       = env->GetStringUTFChars(data, 0);
+            const char *processedRequestIDRaw    = env->GetStringUTFChars(processedRequestID, 0);
+            const char *messageRaw               = env->GetStringUTFChars(message, 0);
+            const char *senderIDRaw              = env->GetStringUTFChars(senderID, 0);
+            const char *senderNameRaw            = env->GetStringUTFChars(senderName, 0);
+            const char *dataRaw                  = env->GetStringUTFChars(data, 0);
+            const char *responseMessageRaw       = env->GetStringUTFChars(responseMessage, 0);
+            const char *receiverIDRaw            = env->GetStringUTFChars(receiverID, 0);
+            
             int responseType          = (int) responseCode;
             
-			(*reinterpret_cast<EziSocialWrapperNS::FBRecieveRequestCallback>(callback_address))(responseType, rawMessage, rawSenderName, rawData);
+			(*reinterpret_cast<EziSocialWrapperNS::FBRecieveRequestCallback>(callback_address))(responseType, processedRequestIDRaw, messageRaw, senderIDRaw, senderNameRaw, receiverIDRaw, dataRaw,  responseMessageRaw);
+            
+            //Cleanup
+            env->ReleaseStringUTFChars(processedRequestID, processedRequestIDRaw);
+            env->ReleaseStringUTFChars(message, messageRaw);
+            env->ReleaseStringUTFChars(senderID, senderIDRaw);
+            env->ReleaseStringUTFChars(senderName, senderNameRaw);
+            env->ReleaseStringUTFChars(data, dataRaw);
+            env->ReleaseStringUTFChars(responseMessage, responseMessageRaw);
+            env->ReleaseStringUTFChars(receiverID, receiverIDRaw);
+        }
+	}
+    
+    void Java_com_ezibyte_social_EziSocialManager_nativePhotoPostCallback(JNIEnv* env,
+                                                                          jobject thiz,
+                                                                          jlong callback_address,
+                                                                          jint  responseCode,
+                                                                          jstring responseMessage)
+	{
+		if (callback_address)
+        {
+            int responseCodeInt = (int)responseCode;
+            const char *responseMessageRaw = env->GetStringUTFChars(responseMessage, 0);
+            
+			(*reinterpret_cast<EziSocialWrapperNS::FBPhotoPostCallback>(callback_address))(responseCodeInt, responseMessageRaw);
+            
+            // Clean up
+            env->ReleaseStringUTFChars(responseMessage, responseMessageRaw);
+        }
+	}
+    
+    
+    void Java_com_ezibyte_social_EziSocialManager_nativeIncomingRequestCallback(JNIEnv* env,
+                                                                                jobject thiz,
+                                                                                jlong callback_address,
+                                                                                jint  responseCode,
+                                                                                jstring requestIDs, jstring responseMessage)
+	{
+		if (callback_address)
+        {
+            int responseCodeInt = (int)responseCode;
+            
+            const char *responseMessageRaw = env->GetStringUTFChars(responseMessage, 0);
+            const char *requestIDsRaw = env->GetStringUTFChars(requestIDs, 0);
+            
+			(*reinterpret_cast<EziSocialWrapperNS::FBIncomingRequestCallback>(callback_address))(responseCodeInt, requestIDsRaw, responseMessageRaw);
+            
+            // Clean up
+            env->ReleaseStringUTFChars(responseMessage, responseMessageRaw);
+            env->ReleaseStringUTFChars(requestIDs, requestIDsRaw);
         }
 	}
     
 };
-
-
 
