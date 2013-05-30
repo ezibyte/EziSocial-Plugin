@@ -264,8 +264,29 @@ Version 1.1 - Logs
 
 On Android and iOS platform there are no changes but the library files are modified to support these new functionalities.
 
+#
+Version 1.2 - Logs
+--
+
+### New Features / Updates
+
+1. **Better error handling**         - with each callback developer will receive now response message. If there is an error, it will give complete description of the error.
+2. **Delete / Reset user score**     - You can now delete the Facebook Score of the user. It will reset it to zero.
+3. **Incoming Request Manager**      - Inbuild request manager fetches and manages all the incoming request.
+4. **Storage of Incoming Request**   - Each Incoming Facebook Request is now stored on the CCUserDefault automatically and deleted if user consume the item. This part is open source and can be easily modified.
+5. **Added User/Request Objects**    - Requests, Friends & User got their own objects. No more dirty handling of CCStrings.
+6. **UTF-8 Character support**       - You can now post and receiver UTF-8 characters.
+7. **Post Photo**                    - You can post either screenshot or any resouce image on the user wall (within your app album).
+8. **Message parameter in AutoPost** - you can now add message within the post.
+9. **Seperate Read and Publish Permission Request** - Developer can now simply ask Read Permission in the starting and later plugin automatically ask for publish permission if required.
+10. Removed limit for score callback
+11. Automatic handling of incoming request on app become active.
+12. Manual handling of incoming request on the developer's wish. :)
+13. Delegate Class is modified and now its not necessary to support all the methods. Use whatever delegate method you need it.
+14. Minor other bug fixes.
 
 
+Check the website for updated and new tutorials.
 
 [EziSocialDemo]: https://github.com/ezibyte/EziSocialDemo/
 [download link]: https://github.com/ezibyte/EziSocialDemo/
