@@ -240,7 +240,7 @@ void internalFBUserDetailCallBack(int responseCode, const char* responseMessage,
     if (responseCode == EziSocialWrapperNS::RESPONSE_CODE::FB_USER_DETAIL_SUCCESS)
     {
         std::vector< std::string > strings = EziSocialObject::tokenizeStr(data, ";");
-        fbUser = new EziFacebookUser();
+        fbUser = EziFacebookUser::create();
         
         for (int i = 1; i < strings.size(); i += 2)
         {

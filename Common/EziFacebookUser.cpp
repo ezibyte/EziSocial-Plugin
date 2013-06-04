@@ -22,6 +22,9 @@
  */
 #include "EziSocialDefinition.h"
 #include "EziFacebookUser.h"
+#include "cocos2d.h"
+
+USING_NS_CC;
 
 EziFacebookUser::EziFacebookUser()
 {
@@ -35,13 +38,28 @@ EziFacebookUser::EziFacebookUser()
     accessToken     = "";
     emailID         = "";
     gender          = "";
-    installed       = false;
     userPhotoPath   = "";
 }
 
 EziFacebookUser:: ~EziFacebookUser()
 {
     
+}
+
+EziFacebookUser* EziFacebookUser::create()
+{
+    EziFacebookUser* fbUser = new EziFacebookUser();
+    if (fbUser)
+    {
+        fbUser->autorelease();
+    }
+    else
+    {
+        CC_SAFE_DELETE(fbUser);
+        return NULL;
+    }
+    
+    return fbUser;
 }
 
 void EziFacebookUser::saveData(const char* key, std::string dataValue)
@@ -134,11 +152,6 @@ const char* EziFacebookUser::getGender()
     return gender.c_str();
 }
 
-bool EziFacebookUser::isGameInstalled()
-{
-    return installed;
-}
-
 const char* EziFacebookUser::getFullName()
 {
     if (fullname.compare("") == 0)
@@ -160,3 +173,36 @@ const char* EziFacebookUser::getPhotoPath()
     return userPhotoPath.c_str();
 }
 
+CCObject* EziFacebookUser::copyWithZone(CCZone *pZone)
+{
+        
+    CCZone* pNewZone = NULL;
+    EziFacebookUser* pCopy = NULL;
+    if(pZone && pZone->m_pCopyObject)
+    {
+        //in case of being called at sub class
+        pCopy = (EziFacebookUser*)(pZone->m_pCopyObject);
+    }
+    else
+    {
+        pCopy = new EziFacebookUser();
+        pNewZone = new CCZone(pCopy);
+    }
+    
+    pCopy->saveData(KEY_FB_USER_NAME, getUserName());
+    pCopy->saveData(KEY_FB_USER_FIRST_NAME, getFirstName());
+    pCopy->saveData(KEY_FB_USER_LAST_NAME, getLastName());
+    pCopy->saveData(KEY_FB_USER_PROFILE_ID, getProfileID());
+    pCopy->saveData(KEY_FB_USER_HOMETOWN, getHomeTown());
+    pCopy->saveData(KEY_FB_USER_PRESENT_LOCATION, getPresentLocation());
+    pCopy->saveData(KEY_FB_USER_ACCESS_TOKEN, getAccessToken());
+    pCopy->saveData(KEY_FB_USER_EMAIL, getEmailID());
+    pCopy->saveData(KEY_FB_USER_GENDER, getGender());
+    pCopy->saveUserPhotoPath(getPhotoPath());
+    
+    
+    //pCopy->initWithAction((CCActionInterval *)(m_pInner->copy()->autorelease()));
+    
+    CC_SAFE_DELETE(pNewZone);
+    return pCopy;
+}

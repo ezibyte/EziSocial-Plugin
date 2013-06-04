@@ -75,6 +75,8 @@ EziFBIncomingRequestManager::~EziFBIncomingRequestManager()
 {
     _completedRequestDictionary->release();
     _pendingRequestDictionary->release();
+    
+    sharedRequestManager = NULL;
 }
 
 void EziFBIncomingRequestManager::rebuildManager()

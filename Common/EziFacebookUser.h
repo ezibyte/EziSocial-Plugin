@@ -26,6 +26,8 @@
 #include <iostream>
 #include "cocos2d.h"
 
+USING_NS_CC;
+
 class EziFacebookUser: public cocos2d::CCObject
 {
     
@@ -39,13 +41,15 @@ class EziFacebookUser: public cocos2d::CCObject
     std::string accessToken;
     std::string emailID;
     std::string gender;
-    bool        installed;
     std::string userPhotoPath;
+    
+    EziFacebookUser();
     
 public:
     
-    EziFacebookUser();
     virtual ~EziFacebookUser();
+    
+    static EziFacebookUser* create();
     
     void saveData(const char* key, std::string dataValue);
     
@@ -59,12 +63,12 @@ public:
     const char*  getEmailID();
     const char*  getGender();
     const char*  getFullName();
-    
-    bool isGameInstalled();
-    
+        
     void saveUserPhotoPath(std::string photoPath);
 
     const char* getPhotoPath();
+    
+    CCObject* copyWithZone(CCZone *pZone);
 };
 
 #endif /* defined(__FacebookGameDemo__EziFacebookUser__) */
