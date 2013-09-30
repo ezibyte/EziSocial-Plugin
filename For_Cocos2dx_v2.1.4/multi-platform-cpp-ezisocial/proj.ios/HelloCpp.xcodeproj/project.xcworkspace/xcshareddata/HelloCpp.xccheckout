@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>496FE7F0-0F4B-4F89-A361-364426CEEFC1</string>
+	<key>IDESourceControlProjectName</key>
+	<string>HelloCpp</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>6E4FBC2E-5EF2-4E1F-A0C6-E79267033695</key>
+		<string>https://bitbucket.org/codesnooker/ezisocial-plugin.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>installers/EziSocial_2.0_Install_Cocos2dx2.1.4/multi-platform-cpp-ezisocial/proj.ios/HelloCpp.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>6E4FBC2E-5EF2-4E1F-A0C6-E79267033695</key>
+		<string>../../../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://bitbucket.org/codesnooker/ezisocial-plugin.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>6E4FBC2E-5EF2-4E1F-A0C6-E79267033695</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>6E4FBC2E-5EF2-4E1F-A0C6-E79267033695</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Social</string>
+		</dict>
+	</array>
+</dict>
+</plist>
