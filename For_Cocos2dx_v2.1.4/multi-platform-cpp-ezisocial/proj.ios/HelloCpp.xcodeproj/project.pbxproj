@@ -209,8 +209,10 @@
 		BF1712461292920000B8313A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB212928DE900B8313A /* libxml2.dylib */; };
 		BF1712471292920000B8313A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB412928DE900B8313A /* libz.dylib */; };
 		BF1C47F01293687400B63C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1C47EA1293683800B63C5D /* QuartzCore.framework */; };
-		CB6E0C7617E722210018C37A /* EziSocial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB6E0C7517E722210018C37A /* EziSocial.framework */; };
 		CB6E0C7817E722480018C37A /* ezibyte_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CB6E0C7717E722480018C37A /* ezibyte_logo.png */; };
+		CB8AA99C17FA1100000F935E /* EziSocialSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB8AA99A17FA1100000F935E /* EziSocialSDK.framework */; };
+		CB8AA99D17FA1101000F935E /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB8AA99B17FA1100000F935E /* FacebookSDK.framework */; };
+		CB8AA99F17FA11AB000F935E /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB8AA99E17FA11AB000F935E /* Security.framework */; };
 		CBD46F8017E0F98700D7661D /* EziFacebookFriend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CBD46F7B17E0F98700D7661D /* EziFacebookFriend.cpp */; };
 		CBD46F8117E0F98700D7661D /* EziFacebookUser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CBD46F7C17E0F98700D7661D /* EziFacebookUser.cpp */; };
 		CBD46F8217E0F98700D7661D /* EziFBIncomingRequest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CBD46F7D17E0F98700D7661D /* EziFBIncomingRequest.cpp */; };
@@ -219,7 +221,6 @@
 		CBFC200C17E11B4F00AA4867 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBFC200B17E11B4F00AA4867 /* Twitter.framework */; };
 		CBFC200E17E11B6200AA4867 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBFC200D17E11B6200AA4867 /* SystemConfiguration.framework */; };
 		CBFC201017E11B7500AA4867 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBFC200F17E11B7500AA4867 /* MessageUI.framework */; };
-		CBFC201317E11BDE00AA4867 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBFC201217E11BDE00AA4867 /* FacebookSDK.framework */; };
 		CBFC201717E11C2C00AA4867 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CBFC201617E11C2C00AA4867 /* libc++.dylib */; };
 		D41A0AD1160F154A004552AE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D41A0AD0160F154A004552AE /* Default-568h@2x.png */; };
 		D446FD6E16102124000ADA7B /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D446FD6D16102124000ADA7B /* Default@2x.png */; };
@@ -658,8 +659,10 @@
 		BF170DB212928DE900B8313A /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		BF170DB412928DE900B8313A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BF1C47EA1293683800B63C5D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		CB6E0C7517E722210018C37A /* EziSocial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = EziSocial.framework; sourceTree = "<group>"; };
 		CB6E0C7717E722480018C37A /* ezibyte_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ezibyte_logo.png; sourceTree = "<group>"; };
+		CB8AA99A17FA1100000F935E /* EziSocialSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = EziSocialSDK.framework; sourceTree = "<group>"; };
+		CB8AA99B17FA1100000F935E /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		CB8AA99E17FA11AB000F935E /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CBD46F7317E0F98700D7661D /* EziFacebookFriend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EziFacebookFriend.h; sourceTree = "<group>"; };
 		CBD46F7417E0F98700D7661D /* EziFacebookUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EziFacebookUser.h; sourceTree = "<group>"; };
 		CBD46F7517E0F98700D7661D /* EziFBIncomingRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EziFBIncomingRequest.h; sourceTree = "<group>"; };
@@ -675,7 +678,6 @@
 		CBFC200B17E11B4F00AA4867 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		CBFC200D17E11B6200AA4867 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		CBFC200F17E11B7500AA4867 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		CBFC201217E11BDE00AA4867 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		CBFC201617E11C2C00AA4867 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		D41A0AD0160F154A004552AE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../proj.ios/Default-568h@2x.png"; sourceTree = "<group>"; };
 		D446FD6D16102124000ADA7B /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../proj.ios/Default@2x.png"; sourceTree = "<group>"; };
@@ -694,13 +696,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB8AA99F17FA11AB000F935E /* Security.framework in Frameworks */,
+				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				CBFC201717E11C2C00AA4867 /* libc++.dylib in Frameworks */,
+				CB8AA99D17FA1101000F935E /* FacebookSDK.framework in Frameworks */,
 				CBFC201017E11B7500AA4867 /* MessageUI.framework in Frameworks */,
 				CBFC200E17E11B6200AA4867 /* SystemConfiguration.framework in Frameworks */,
+				CB8AA99C17FA1100000F935E /* EziSocialSDK.framework in Frameworks */,
 				CBFC200C17E11B4F00AA4867 /* Twitter.framework in Frameworks */,
 				15A3DA6A1682F886002FB0C5 /* libcocos2dx.a in Frameworks */,
 				1ACB3244164770DE00914215 /* libcurl.a in Frameworks */,
-				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */,
 				BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */,
@@ -711,8 +716,6 @@
 				D44C620E132DFF430009C878 /* AVFoundation.framework in Frameworks */,
 				D44C6210132DFF4E0009C878 /* AudioToolbox.framework in Frameworks */,
 				1AB8703C175E0A92005D39BF /* libwebsockets.a in Frameworks */,
-				CBFC201317E11BDE00AA4867 /* FacebookSDK.framework in Frameworks */,
-				CB6E0C7617E722210018C37A /* EziSocial.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1496,8 +1499,9 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CB6E0C7517E722210018C37A /* EziSocial.framework */,
-				CBFC201217E11BDE00AA4867 /* FacebookSDK.framework */,
+				CB8AA99E17FA11AB000F935E /* Security.framework */,
+				CB8AA99A17FA1100000F935E /* EziSocialSDK.framework */,
+				CB8AA99B17FA1100000F935E /* FacebookSDK.framework */,
 				CBFC200F17E11B7500AA4867 /* MessageUI.framework */,
 				CBFC200D17E11B6200AA4867 /* SystemConfiguration.framework */,
 				CBFC200B17E11B4F00AA4867 /* Twitter.framework */,
@@ -1879,7 +1883,8 @@
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"/Users/codesnooker/MacOSX/Development/tools/Cocos2D-X/cocos2d-x-2.1.4/template/multi-platform-cpp-ezisocial/proj.ios",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -1933,7 +1938,8 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"/Users/codesnooker/MacOSX/Development/tools/Cocos2D-X/cocos2d-x-2.1.4/template/multi-platform-cpp-ezisocial/proj.ios",
 				);
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;

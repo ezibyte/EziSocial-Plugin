@@ -3,7 +3,7 @@
 #import "cocos2d.h"
 #import "AppDelegate.h"
 #import "RootViewController.h"
-#import <EziSocial/EziSocialManager.h>
+#import <EziSocialSDK/EziSocialManager.h>
 
 @implementation AppController
 

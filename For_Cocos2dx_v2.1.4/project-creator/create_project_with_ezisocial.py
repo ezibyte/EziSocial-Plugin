@@ -1,8 +1,8 @@
 #!/usr/bin/python
-# create_project.py
-# Create cross-platform cocos2d-x project
-# Copyright (c) 2012 cocos2d-x.org
-# Author: WangZhe
+# create_project_with_ezisocial.py
+# Create cross-platform cocos2d-x project with EziSocial Plugin
+# Copyright (c) 2012 cocos2d-x.org / Modified By EziByte Technologies Pvt. Ltd.
+# Author: WangZhe / Paras Mendiratta
 
 # define global variables
 context = {
