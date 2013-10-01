@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>B2EAB139-5CE2-4485-A38B-F2AE2A0D529A</string>
+	<key>IDESourceControlProjectName</key>
+	<string>HelloCpp</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>5D8FAE31-19C7-404D-A1A6-0272C75D5A80</key>
+		<string>https://github.com/ezibyte/EziSocial-Plugin.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>For_Cocos2dx_v2.1.5/multi-platform-cpp-ezisocial/proj.ios/HelloCpp.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>5D8FAE31-19C7-404D-A1A6-0272C75D5A80</key>
+		<string>../../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/ezibyte/EziSocial-Plugin.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>5D8FAE31-19C7-404D-A1A6-0272C75D5A80</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>5D8FAE31-19C7-404D-A1A6-0272C75D5A80</string>
+			<key>IDESourceControlWCCName</key>
+			<string>EziSocial</string>
+		</dict>
+	</array>
+</dict>
+</plist>
