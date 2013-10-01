@@ -148,7 +148,7 @@ void internalFBSessionCallback(int responseCode, const char* responseMessage, co
     if (responseCode == EziSocialWrapperNS::RESPONSE_CODE::FB_LOGIN_SUCCESSFUL)
     {
         CCLOG("Fetching user details...");
-        EziSocialObject::sharedObject()->fetchFBUserDetails(true);
+        EziSocialObject::sharedObject()->fetchFBUserDetails(false);
         
         if (strcmp(userID, "") != 0)
         {
