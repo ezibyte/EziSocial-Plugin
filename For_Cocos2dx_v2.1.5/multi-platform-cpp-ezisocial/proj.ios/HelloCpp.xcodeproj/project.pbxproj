@@ -1914,7 +1914,6 @@
 					"\"$(SRCROOT)/../../../external/libwebsockets/ios/lib\"",
 				);
 				OTHER_CFLAGS = "-O2";
-				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = HelloCpp;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -1966,7 +1965,6 @@
 					"\"$(SRCROOT)/../../../cocos2dx/platform/third_party/ios/libraries\"",
 					"\"$(SRCROOT)/../../../external/libwebsockets/ios/lib\"",
 				);
-				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = HelloCpp;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
