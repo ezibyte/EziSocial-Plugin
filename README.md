@@ -42,6 +42,12 @@ Email - Allows you to preconfigure the mail and allows user to send the mail to 
 
 To know about how to use this plugin, please visit site: http://www.ezibyte.com
 
+=========================================
+Version 2.1.1 - Pushed on 22 Jan 2013
+———————————————————————-
+
+Fixed twitter app not found issue
+
 
 =========================================
 Version 1.0.1 - Pushed on 30th April 2013
