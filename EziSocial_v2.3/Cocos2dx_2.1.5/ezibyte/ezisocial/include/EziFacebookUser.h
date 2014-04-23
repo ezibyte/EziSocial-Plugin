@@ -15,6 +15,7 @@
 class EziFacebookUser: public cocos2d::CCObject
 {
     
+    std::string birthday;
     std::string username;
     std::string firstName;
     std::string lastName;
@@ -45,6 +46,7 @@ public:
     const char*  getEmailID();
     const char*  getGender();
     const char*  getFullName();
+    const char*  getBirthday();
     
     bool isGameInstalled();
     

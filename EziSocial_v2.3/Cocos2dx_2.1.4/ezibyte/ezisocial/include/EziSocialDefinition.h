@@ -24,6 +24,7 @@
 #define ENABLE_MAIL_FUNCTIONALITY
 #define ENABLE_TWITTER_FUNCTIONALITY
 
+#define KEY_FB_USER_BIRTHDAY            "birthday"
 #define KEY_FB_USER_ERROR               "error"
 #define KEY_FB_USER_NAME                "username"
 #define KEY_FB_USER_EMAIL               "email"

@@ -23,6 +23,7 @@ EziFacebookUser::EziFacebookUser()
     gender          = "";
     installed       = false;
     userPhotoPath   = "";
+    birthday        = "";
 }
 
 EziFacebookUser:: ~EziFacebookUser()
@@ -35,6 +36,10 @@ void EziFacebookUser::saveData(const char* key, std::string dataValue)
     if (strcmp(key, KEY_FB_USER_NAME) == 0)
     {
         this->username = dataValue;
+    }
+    else if (strcmp(key, KEY_FB_USER_BIRTHDAY) == 0)
+    {
+        this->birthday = dataValue;
     }
     else if (strcmp(key, KEY_FB_USER_ACCESS_TOKEN) == 0)
     {
@@ -146,4 +151,10 @@ const char* EziFacebookUser::getPhotoPath()
 {
     return userPhotoPath.c_str();
 }
+
+const char* EziFacebookUser::getBirthday()
+{
+    return birthday.c_str();
+}
+
 
